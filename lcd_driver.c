@@ -239,6 +239,7 @@ static ssize_t lcd_sysfs_show(struct kobject *kobj, struct kobj_attribute *attr,
 static ssize_t lcd_sysfs_store(struct kobject *kobj, struct kobj_attribute *attr, const char *buf, size_t count) {
     printk(KERN_INFO "Sysfs - LCD Write!!!\n");
     strncpy(lcd_text, buf, sizeof(lcd_text));
+    lcd_text[count - 1] = '\0';
     initialize_lcd(lcd_client);
     lcd_write_string(lcd_client, lcd_text);
 
