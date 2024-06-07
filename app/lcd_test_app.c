@@ -23,6 +23,7 @@ int main() {
     int fd;
     struct rgb_value rgb_data, read_data;
     char lcd_text[256];
+    int Red = 255, Green = 255, Blue = 255;
     char read_lcd_text[256];
     int option;
 
@@ -51,16 +52,39 @@ int main() {
                 printf("RGB Values are R: %d, G: %d, B: %d\n", read_data.red, read_data.green, read_data.blue);
                 break;
             case 2:
-                // Write RGB values to driver
-                printf("Enter the RGB values (0-255) to send: \n");
+                
+		// Write RGB values to driver
+		
+		printf("Enter the RGB values (0-255) to send: \n");
                 printf("Red: ");
-                scanf("%hhu", &rgb_data.red);
+                scanf("%d", &Red);
                 printf("Green: ");
-                scanf("%hhu", &rgb_data.green);
+                scanf("%d", &Green);
                 printf("Blue: ");
-                scanf("%hhu", &rgb_data.blue);
+                scanf("%d", &Blue);
 
-                // Print RGB values before writing to driver
+		if(Red > 255 || Red < 0){
+		    printf("Red > 255\nTaking default value of Red : 255\n");
+		    rgb_data.red = 255;
+		} else {
+		    rgb_data.red = Red;	
+		}
+
+		if(Green > 255 || Green < 0){
+		    printf("Green > 255\nTaking default value of Green : 255\n");
+		    rgb_data.green = 255;
+		} else {
+		    rgb_data.green = Green;	
+		}
+
+		if(Blue > 255 || Blue < 0){
+		    printf("Blue > 255\nTaking default value of Blue : 255\n");
+		    rgb_data.blue = 255;
+		} else {
+		    rgb_data.blue = Blue;	
+		}
+
+		// Print RGB values before writing to driver
                 printf("RGB Values to write: R: %d, G: %d, B: %d\n", rgb_data.red, rgb_data.green, rgb_data.blue);
 
                 printf("Writing RGB Values to Driver...\n");

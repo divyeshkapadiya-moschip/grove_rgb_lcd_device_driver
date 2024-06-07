@@ -62,9 +62,9 @@ The sysfs interface allows you to read and write the RGB backlight color and the
   cat /sys/kernel/rgb_lcd_sysfs/rgb_color
   ```
 
-- Set the RGB backlight color (e.g., to red):
+- Set the RGB backlight color :
   ```bash
-  echo "FF0000" > /sys/kernel/rgb_lcd_sysfs/rgb_color
+  echo "Red : 100, Green : 500, Blue : 500" > /sys/kernel/rgb_lcd_sysfs/rgb_color
   ```
 
 - Read the current text displayed on the LCD:

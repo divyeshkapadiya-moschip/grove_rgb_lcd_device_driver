@@ -21,7 +21,7 @@
 #include <linux/ioctl.h>
 #include <linux/cdev.h>
 
-#define I2C_BUS_AVAILABLE   (2)              // I2C Bus available in our Raspberry Pi
+#define I2C_BUS_AVAILABLE   (2)              // I2C Bus available in our Beaglebone Black
 
 #define LCD_ADDRESS 0x3E
 #define RGB_ADDRESS 0x62
@@ -214,16 +214,42 @@ struct kobject *kobj_ref;
 
 static ssize_t rgb_sysfs_show(struct kobject *kobj, struct kobj_attribute *attr, char *buf) {
     printk(KERN_INFO "Sysfs - RGB Read!!!\n");
-    return sprintf(buf, "R : %02X, G : %02X, B : %02X\n", rgb_val_red, rgb_val_green, rgb_val_blue);
+    return sprintf(buf, "R : %02d, G : %02d, B : %02d\n", rgb_val_red, rgb_val_green, rgb_val_blue);
 }
 
 static ssize_t rgb_sysfs_store(struct kobject *kobj, struct kobj_attribute *attr, const char *buf, size_t count) {
+    unsigned int red, green, blue;
     printk(KERN_INFO "Sysfs - RGB Write!!!\n");
-    if (sscanf(buf, "%02hhX%02hhX%02hhX", &rgb_val_red, &rgb_val_green, &rgb_val_blue) == 3) {
-        i2c_write_data(rgb_client, rgb_reg_red, rgb_val_red);
+    if (sscanf(buf, "Red : %u, Green : %u, Blue : %u", &red, &green, &blue) == 3) {
+        
+	if(red > 255 || red < 0){
+	    pr_info("Red value is out of range\nContinue with default(255)\n");
+	    rgb_val_red = 255;
+	} else {
+	    rgb_val_red = red;
+	}
+
+	if(green > 255 || green < 0){
+	    pr_info("Red value is out of range\nContinue with default(255)\n");
+	    rgb_val_green = 255;
+	} else {
+	    rgb_val_green = green;
+	}
+
+	if(blue > 255 || blue < 0){
+	    pr_info("Red value is out of range\nContinue with default(255)\n");
+	    rgb_val_blue = 255;
+	} else {
+	    rgb_val_blue = blue;
+	}
+
+	i2c_write_data(rgb_client, rgb_reg_red, rgb_val_red);
         i2c_write_data(rgb_client, rgb_reg_green, rgb_val_green);
         i2c_write_data(rgb_client, rgb_reg_blue, rgb_val_blue);
-        return count;
+        
+	return count;
+    } else {
+	    pr_info("Invalid Write format\n format is -> Red : <value>, Green : <value>, Blue : <value>"); 
     }
     return -EINVAL;
 }
